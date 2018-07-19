@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  <PropertyGroup>
+    <!--Work around so the conditions work below-->
+    <TargetFrameworks></TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">netstandard1.0;netstandard2.0;Xamarin.iOS10;MonoAndroid81;</TargetFrameworks>
+    <AssemblyName>PILSharp</AssemblyName>
+    <RootNamespace>PILSharp</RootNamespace>
+    <PackageId>PILSharp</PackageId>
+    <Summary>PILSharp: a kit of image processing API's for your apps</Summary>
+    <PackageTags>xamarin, ios, android, xamarin.forms, toolkit, PILSharp, kit</PackageTags>
+    <Title>PILSharp</Title>
+    <Description>PILSharp: a kit of image processing API's for your apps</Description>
+    <Product>$(AssemblyName) ($(TargetFramework))</Product>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
+    <Version>1.0.0</Version>
+    <PackageVersion>$(Version)$(VersionSuffix)</PackageVersion>
+    <Authors>Giorgos Sgouridis</Authors>
+    <Owners>Giorgos Sgouridis</Owners>
+    <NeutralLanguage>en</NeutralLanguage>
+    <RepositoryUrl>https://github.com/gsgou/PILSharp</RepositoryUrl>
+    <PackageReleaseNotes>See: https://github.com/gsgou/PILSharp</PackageReleaseNotes>
+    <LangVersion>7.2</LangVersion>
+    <DefineConstants>$(DefineConstants);</DefineConstants>
+    <UseFullSemVerForNuGet>false</UseFullSemVerForNuGet>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <PackageProjectUrl>https://github.com/gsgou/PILSharp</PackageProjectUrl>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)'=='Release' ">
+    <DebugType>pdbonly</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.4.0" PrivateAssets="All" />
+    <Compile Include="**\*.shared.cs" />
+    <Compile Include="**\*.shared.*.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
+    <Compile Include="**\*.netstandard.cs" />
+    <Compile Include="**\*.netstandard.*.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
+    <PackageReference Include="Xamarin.Android.Support.CustomTabs" Version="27.0.2.1" />
+    <PackageReference Include="Xamarin.Android.Support.Core.Utils" Version="27.0.2.1" />
+    <Compile Include="**\*.android.cs" />
+    <Compile Include="**\*.android.*.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
+    <Compile Include="**\*.ios.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
+</Project>

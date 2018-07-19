@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Forms" Version="3.1.0.637273" />
+    <PackageReference Include="PILSharp" Version="0.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\" />
+    <Folder Include="TestImages\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Utils\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\TestImages\nightshot_iso_100.bmp">
+      <Link>TestImages\nightshot_iso_100.bmp</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\TestImages\vgl_5674_0098.bmp">
+      <Link>TestImages\vgl_5674_0098.bmp</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\TestImages\vgl_6434_0018a.bmp">
+      <Link>TestImages\vgl_6434_0018a.bmp</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\TestImages\vgl_6548_0026a.bmp">
+      <Link>TestImages\vgl_6548_0026a.bmp</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

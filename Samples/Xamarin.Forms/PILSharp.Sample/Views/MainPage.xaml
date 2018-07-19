@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PILSharp.Sample;assembly=PILSharp.Sample"
+             x:Class="PILSharp.Sample.MainPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="LabelStyle" TargetType="Label">
+                <Setter Property="VerticalOptions" Value="Start"/>
+                <Setter Property="VerticalTextAlignment" Value="Start"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="FontSize" Value="Micro"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid Margin="0,20,0,0"
+              RowSpacing="0"
+              ColumnSpacing="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2.3*"/>
+                <RowDefinition Height="0.2*"/>
+                <RowDefinition Height="2.3*"/>
+                <RowDefinition Height="0.2*"/>
+                <RowDefinition Height="2.3*"/>
+                <RowDefinition Height="0.2*"/>
+                <RowDefinition Height="2.3*"/>
+                <RowDefinition Height="0.2*"/>
+           </Grid.RowDefinitions>
+           <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="5*"/>
+           </Grid.ColumnDefinitions>
+           <Image x:Name="Source1"
+                  Grid.Row="0"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="1"
+                  Source="{local:ImageResource PILSharp.Sample.TestImages.vgl_5674_0098.bmp}"
+                  Aspect="AspectFit">
+               <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTapSource1"
+                                          NumberOfTapsRequired="1"/>
+               </Image.GestureRecognizers>
+           </Image>
+           <Label Grid.Row="1"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="1"
+                  Text="vgl_5674_0098.bmp"
+                  Style="{StaticResource LabelStyle}"/>
+           <Image x:Name="Source2"
+                  Grid.Row="2"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="1"
+                  Source="{local:ImageResource PILSharp.Sample.TestImages.vgl_6434_0018a.bmp}"
+                  Aspect="AspectFit">
+               <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTapSource2"
+                                          NumberOfTapsRequired="1"/>
+               </Image.GestureRecognizers>
+           </Image>
+           <Label Grid.Row="3"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="1"
+                  Text="vgl_6434_0018a.bmp"
+                  Style="{StaticResource LabelStyle}"/>
+           <Image x:Name="Source3"
+                  Grid.Row="4"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="1"
+                  Source="{local:ImageResource PILSharp.Sample.TestImages.vgl_6548_0026a.bmp}"
+                  Aspect="AspectFit">
+               <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTapSource3"
+                                          NumberOfTapsRequired="1"/>
+               </Image.GestureRecognizers>
+           </Image>
+           <Label Grid.Row="5"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="1"
+                  Text="vgl_6548_0026a.bmp"
+                  Style="{StaticResource LabelStyle}"/>
+           <Image x:Name="Source4"
+                  Grid.Row="6"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="1"
+                  Source="{local:ImageResource PILSharp.Sample.TestImages.nightshot_iso_100.bmp}"
+                  Aspect="AspectFit">
+               <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTapSource4"
+                                          NumberOfTapsRequired="1"/>
+               </Image.GestureRecognizers>
+           </Image>
+           <Label Grid.Row="7"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="1"
+                  Text="nightshot_iso_100.bmp"
+                  Style="{StaticResource LabelStyle}"/>
+            
+           <Image x:Name="Target1"
+                  Grid.Row="0"
+                  Grid.Column="1"
+                  Grid.ColumnSpan="1"
+                  Aspect="AspectFit"/>
+           <Label x:Name="Target1Label"
+                  Grid.Row="1"
+                  Grid.Column="1"
+                  Grid.ColumnSpan="1"
+                  Style="{StaticResource LabelStyle}"/>
+            <Image x:Name="Target2"
+                  Grid.Row="2"
+                  Grid.Column="1"
+                  Grid.ColumnSpan="1"
+                  Aspect="AspectFit"/>
+           <Label x:Name="Target2Label"
+                  Grid.Row="3"
+                  Grid.Column="1"
+                  Grid.ColumnSpan="1"
+                  Style="{StaticResource LabelStyle}"/>
+            <Image x:Name="Target3"
+                  Grid.Row="4"
+                  Grid.Column="1"
+                  Grid.ColumnSpan="1"
+                  Aspect="AspectFit"/>
+           <Label x:Name="Target3Label"
+                  Grid.Row="5"
+                  Grid.Column="1"
+                  Grid.ColumnSpan="1"
+                  Style="{StaticResource LabelStyle}"/>
+            <Image x:Name="Target4"
+                  Grid.Row="6"
+                  Grid.Column="1"
+                  Grid.ColumnSpan="1"
+                  Aspect="AspectFit"/>
+           <Label x:Name="Target4Label"
+                  Grid.Row="7"
+                  Grid.Column="1"
+                  Grid.ColumnSpan="1"
+                  Style="{StaticResource LabelStyle}"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
