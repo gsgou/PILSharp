@@ -46,46 +46,29 @@ namespace PILSharp
             return (vImageError)(long)vImageEqualization_ARGB8888(ref src, ref dest, flags);
         }
 
-        static byte[] PlatformEqualize(byte[] imageData, int width, int height)
+        static byte[] PlatformEqualize(byte[] imageData, BitmapData bitmapData)
         {
             const int bytesPerPixel = 4;
             const int bitsPerComponent = 8;
             const CGBitmapFlags flags = CGBitmapFlags.PremultipliedFirst | CGBitmapFlags.ByteOrder32Big;
-            int bytesPerRow = bytesPerPixel * width;
+            int bytesPerRow = bytesPerPixel * bitmapData.Width;
 
             // Convert UIImage to array of bytes in ARGB8888 pixel format
-            byte[] srcArray = new byte[bytesPerRow * height];
+            byte[] srcArray = new byte[bytesPerRow * bitmapData.Height];
 
-            var uiImage = UIImageFromByteArray(imageData);
-
-            string imageFormat = null;
-            string imageFormatType = uiImage?.CGImage.UTType;
-            switch (imageFormatType)
+            using (var colorSpace = CGColorSpace.CreateGenericRgb())
+            using (var srcContext = new CGBitmapContext(srcArray,
+                                     bitmapData.Width,
+                                     bitmapData.Height,
+                                     bitsPerComponent,
+                                     bytesPerRow,
+                                     colorSpace,
+                                     flags))
+            using (var uiImage = UIImageFromByteArray(imageData))
+            using (var cgImage = uiImage.CGImage)
             {
-                case "com.microsoft.bmp":
-                    //imageFormat = "BMP";
-                    imageFormat = "JPEG";
-                    break;
-                case "public.jpeg":
-                    imageFormat = "JPEG";
-                    break;
-                case "public.png":
-                    imageFormat = "PNG";
-                    break;
-                default:
-                    throw new NotSupportedException($"Provided image format \"{imageFormatType}\" is not supported");
+                srcContext.DrawImage(new CGRect(0, 0, bitmapData.Width, bitmapData.Height), cgImage);
             }
-
-            var srcContext = new CGBitmapContext(srcArray,
-                                 width,
-                                 height,
-                                 bitsPerComponent,
-                                 bytesPerRow,
-                                 CGColorSpace.CreateDeviceRGB(),
-                                 flags);
-
-            srcContext?.DrawImage(new CGRect(0, 0, width, height), uiImage.CGImage);
-            srcContext?.Dispose();
 
             var srcArrayPtr = IntPtr.Zero;
             var srcArrayHandle = GCHandle.Alloc(srcArray, GCHandleType.Pinned);
@@ -95,7 +78,7 @@ namespace PILSharp
             }
 
             var destArrayPtr = IntPtr.Zero;
-            var destArray = new byte[bytesPerRow * height];
+            var destArray = new byte[bytesPerRow * bitmapData.Height];
             var destArrayHandle = GCHandle.Alloc(destArray, GCHandleType.Pinned);
             if (destArrayHandle.IsAllocated)
             {
@@ -110,20 +93,24 @@ namespace PILSharp
             var src = new vImageBuffer
             {
                 Data = srcArrayPtr,
-                Height = height,
-                Width = width,
+                Height = bitmapData.Height,
+                Width = bitmapData.Width,
                 BytesPerRow = bytesPerRow
             };
 
             var dest = new vImageBuffer
             {
                 Data = destArrayPtr,
-                Height = height,
-                Width = width,
+                Height = bitmapData.Height,
+                Width = bitmapData.Width,
                 BytesPerRow = bytesPerRow
             };
 
             // https://github.com/YuAo/Vivid/blob/master/Sources/YUCIHistogramEqualization.m
+            // https://developer.apple.com/documentation/accelerate/vimage/vimage_operations/histogram
+            // TODO:
+            // Contrast Limited Adaptive Histogram Equalization
+            // https://github.com/YuAo/Vivid/blob/master/Sources/YUCICLAHE.m
             vImageError err = EqualizationARGB8888(ref src, ref dest, vImageFlags.NoFlags);
             if (err != vImageError.NoError)
             {
@@ -131,41 +118,37 @@ namespace PILSharp
                 return Array.Empty<byte>();
             }
 
-            // TODO:
-            // Contrast Limited Adaptive Histogram Equalization
-            // https://github.com/YuAo/Vivid/blob/master/Sources/YUCICLAHE.m
+            byte[] destDataArray = Array.Empty<byte>();
 
-            CGImage destCGImage = null;
-            CGBitmapContext destContext = new CGBitmapContext(destArrayPtr,
-                                              width,
-                                              height,
-                                              bitsPerComponent,
-                                              bytesPerRow,
-                                              CGColorSpace.CreateDeviceRGB(),
-                                              flags);
-            destCGImage = destContext.ToImage();
-            destContext.Dispose();
-
-            UIImage destImage = new UIImage(destCGImage);
-            NSData destData;
-            switch (imageFormat)
+            using (var colorSpace = CGColorSpace.CreateGenericRgb())
+            using (var destContext = new CGBitmapContext(destArrayPtr,
+                                         bitmapData.Width,
+                                         bitmapData.Height,
+                                         bitsPerComponent,
+                                         bytesPerRow,
+                                         colorSpace,
+                                         flags))
+            using (var destCGImage = destContext.ToImage())
+            using (var destImage = new UIImage(destCGImage))
             {
-                case "com.microsoft.bmp":
-                    destData = destImage.AsJPEG();
-                    // BMP
-                    // https://stackoverflow.com/questions/25126772/
-                    // https://stackoverflow.com/questions/28648974/
-                    // https://www.davidbritch.com/2015/12/accessing-image-pixel-data-in.html
-                    // http://christian-helle.blogspot.com/2016/09/working-with-native-bitmap-pixel.html
-                    break;
-                case "JPEG":
-                    destData = destImage.AsJPEG();
-                    break;
-                case "PNG":
-                    destData = destImage.AsPNG();
-                    break;
-                default:
-                    throw new NotSupportedException($"Provided image format \"{imageFormat}\" is not supported");
+                if (bitmapData.ImageFormat == ImageFormat.Bmp)
+                {
+                    destDataArray = destImage.AsBMP();
+                }
+                else
+                {
+                    NSData destData = null;
+                    if (bitmapData.ImageFormat == ImageFormat.Jpeg)
+                    {
+                        destData = destImage.AsJPEG();
+                    }
+                    else if (bitmapData.ImageFormat == ImageFormat.Png)
+                    {
+                        destData = destImage.AsPNG();
+                    }
+                    destDataArray = destData.ToArray();
+                    destData.Dispose();
+                }
             }
 
             if (srcArrayHandle.IsAllocated)
@@ -180,7 +163,7 @@ namespace PILSharp
                 destArrayPtr = IntPtr.Zero;
             }
 
-            return destData.ToArray();
+            return destDataArray;
         }
 
         static UIImage UIImageFromByteArray(byte[] data)

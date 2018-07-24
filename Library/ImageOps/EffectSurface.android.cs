@@ -1,4 +1,6 @@
-﻿using Android.Graphics;
+﻿using System;
+
+using Android.Graphics;
 using Android.Media.Effect;
 using Android.Opengl;
 using Android.Util;
@@ -9,27 +11,26 @@ using Object = Java.Lang.Object;
 
 namespace PILSharp
 {
-    class OutputSurface : Object
+    class EffectSurface : Object
     {
+        BitmapData _bitmapData;
+
         int[] _textures = new int[2];
         TextureRenderer _textureRenderer;
 
         EGLDisplay _eglDisplay = EGL14.EglNoDisplay;
         EGLContext _eglContext = EGL14.EglNoContext;
         EGLSurface _eglSurface = EGL14.EglNoSurface;
-        int _width;
-        int _height;
 
         // Creates an OutputSurface with the specified dimensions.
         // The new EGL context and surface will be made current.
-        public OutputSurface(int width, int height)
+        public EffectSurface(BitmapData bitmapData)
         {
-            if (width <= 0 || height <= 0)
+            _bitmapData = bitmapData;
+            if (_bitmapData.Width <= 0 || _bitmapData.Height <= 0)
             {
                 throw new IllegalArgumentException();
             }
-            _width = width;
-            _height = height;
 
             EGLSetup();
             MakeCurrent();
@@ -87,8 +88,8 @@ namespace PILSharp
             // Create a pbuffer surface.
             int[] surfaceAttribs =
             {
-                EGL14.EglWidth, _width,
-                EGL14.EglHeight, _height,
+                EGL14.EglWidth, _bitmapData.Width,
+                EGL14.EglHeight, _bitmapData.Height,
                 EGL14.EglNone
             };
             _eglSurface = EGL14.EglCreatePbufferSurface(_eglDisplay, configs[0], surfaceAttribs, 0);
@@ -126,35 +127,50 @@ namespace PILSharp
             _textureRenderer = null;
         }
 
-        public byte[] DrawImage(byte[] imageData)
+        public byte[] DrawImage(byte[] imageData, bool flip, string effectType)
         {
+            if (!EffectFactory.IsEffectSupported(effectType))
+            {
+                throw new NotSupportedException();
+            }
+
             // Load input bitmap
-            var bitmap = BitmapFactory.DecodeByteArray(imageData, 0, imageData.Length);
+            using (var bitmap = (flip == true) ? Flip(BitmapFactory.DecodeByteArray(imageData, 0, imageData.Length))
+                                               : BitmapFactory.DecodeByteArray(imageData, 0, imageData.Length))
+            {
+                using (var effectContext = EffectContext.CreateWithCurrentGlContext())
+                {
+                    LoadTextures(bitmap);
 
-            // Flip input bitmap
-            bitmap = Flip(bitmap);
+                    // Initialize, apply effect
+                    using (var effectFactory = effectContext.Factory)
+                    {
+                        using (var effect = effectFactory.CreateEffect(effectType))
+                        {
+                            effect.SetParameter("scale", 1.0f);
 
-            var _effectContext = EffectContext.CreateWithCurrentGlContext();
-            LoadTextures(bitmap);
+                            effect.Apply(_textures[0], bitmap.Width, bitmap.Height, _textures[1]);
 
-            // InitialiseEffect
-            EffectFactory effectFactory = _effectContext.Factory;
-            var _effect = effectFactory.CreateEffect(EffectFactory.EffectAutofix);
-            _effect.SetParameter("scale", 1.0f);
+                            effect.Release();
+                        }
+                    }
 
-            // ApplyEffect
-            _effect.Apply(_textures[0], bitmap.Width, bitmap.Height, _textures[1]);
+                    effectContext.Release();
+                }
+
+                bitmap.Recycle();
+            }
 
             // Draws the data from SurfaceTexture onto the current EGL surface.
             _textureRenderer.RenderTexture(_textures[1]);
 
-            return _textureRenderer.GetImageBytes();
+            return _textureRenderer.GetImageBytes(_bitmapData.ImageFormat);
         }
 
-        public new void Dispose()
+        protected override void Dispose(bool disposing)
         {
             this.Release();
-            base.Dispose();
+            base.Dispose(disposing);
         }
 
         void LoadTextures(Bitmap bitmap)

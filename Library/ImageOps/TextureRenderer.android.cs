@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 using Android.Graphics;
 using Android.Opengl;
@@ -84,7 +85,7 @@ namespace PILSharp
         }
 
         // Get's the image bytes of the current frame as a JPEG image.
-        public byte[] GetImageBytes()
+        public byte[] GetImageBytes(ImageFormat imageFormat)
         {
             // glReadPixels gives us a ByteBuffer filled with what is essentially big-endian RGBA
             // data. To use the Bitmap constructor that takes an int[] array with pixel data, 
@@ -98,24 +99,37 @@ namespace PILSharp
             // typical GL conventions are used. (We avoid the issue by inverting the image
             // before callling GLUtils.TexImage2D.)
 
-            byte[] imageBytes;
+            byte[] imageBytes = Array.Empty<byte>();
 
             // Allocating large buffers is expensive, so we really want pixelBuf to be allocated ahead of time if possible.
-            var pixelBuf = ByteBuffer.AllocateDirect(_texWidth * _texHeight * 4);
-            pixelBuf.Order(ByteOrder.LittleEndian);
-
-            pixelBuf.Rewind();
-            GLES20.GlReadPixels(0, 0, _texWidth, _texHeight, GLES20.GlRgba, GLES20.GlUnsignedByte, pixelBuf);
-
-            using (var stream = new MemoryStream())
+            using (var pixelBuf = ByteBuffer.AllocateDirect(_texWidth * _texHeight * 4))
             {
-                using (Bitmap bmp = Bitmap.CreateBitmap(_texWidth, _texHeight, Bitmap.Config.Argb8888))
+                pixelBuf.Order(ByteOrder.LittleEndian);
+                pixelBuf.Rewind();
+                GLES20.GlReadPixels(0, 0, _texWidth, _texHeight, GLES20.GlRgba, GLES20.GlUnsignedByte, pixelBuf);
+
+                using (var bmp = Bitmap.CreateBitmap(_texWidth, _texHeight, Bitmap.Config.Argb8888))
                 {
                     pixelBuf.Rewind();
                     bmp.CopyPixelsFromBuffer(pixelBuf);
 
-                    bmp.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
-                    imageBytes = stream.ToArray();
+                    using (var stream = new MemoryStream())
+                    {
+                        switch (imageFormat)
+                        {
+                            case ImageFormat.Bmp:
+                                imageBytes = bmp.AsBMP();
+                                break;
+                            case ImageFormat.Jpeg:
+                                bmp.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
+                                imageBytes = stream.ToArray();
+                                break;
+                            case ImageFormat.Png:
+                                bmp.Compress(Bitmap.CompressFormat.Png, 100, stream);
+                                imageBytes = stream.ToArray();
+                                break;
+                        }
+                    }
 
                     bmp.Recycle();
                 }

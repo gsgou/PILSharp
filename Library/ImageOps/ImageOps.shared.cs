@@ -5,7 +5,7 @@
         public static BitmapData GetBitmapData(byte[] imageData) =>
             PlatformGetBitmapData(imageData);
 
-        public static byte[] Equalize(byte[] imageData, int width, int height) =>
-            PlatformEqualize(imageData, width, height);
+        public static byte[] Equalize(byte[] imageData, BitmapData bitmapData) =>
+            PlatformEqualize(imageData, bitmapData);
     }
 }
