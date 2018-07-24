@@ -56,7 +56,7 @@ namespace PILSharp.Sample
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            var equalizedDataNative = PILSharp.ImageOps.Equalize(imageData, bitmapData.Width, bitmapData.Height);
+            var equalizedDataNative = PILSharp.ImageOps.Equalize(imageData, bitmapData);
 
             stopwatch.Stop();
             elapsedTime = stopwatch.ElapsedMilliseconds;
