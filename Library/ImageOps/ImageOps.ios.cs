@@ -13,32 +13,28 @@ namespace PILSharp
     {
         static BitmapData PlatformGetBitmapData(byte[] imageData)
         {
-            CGImage cgImage = CGImageFromByteArray(imageData);
-            if (cgImage == null)
-            {
-                return null;
-            }
-
-            /*
-            string imageFormat = cgImage.UTType;
-            switch (imageFormat)
-            {
-                case "com.microsoft.bmp":
-                    break;
-                case "public.jpeg":
-                    break;
-                case "public.png":
-                    break;
-                default:
-                    throw new NotSupportedException($"Provided image format \"{imageFormat}\" is not supported");
-            }
-            */
-
             var bitmapData = new BitmapData();
-            bitmapData.Width = (int)cgImage.Width;
-            bitmapData.Height = (int)cgImage.Height;
-            bitmapData.Stride = (int)cgImage.BytesPerRow;
 
+            using (var cgImage = CGImageFromByteArray(imageData))
+            {
+                bitmapData.Width = (int)cgImage.Width;
+                bitmapData.Height = (int)cgImage.Height;
+                switch (cgImage.UTType)
+                {
+                    case "com.microsoft.bmp":
+                        bitmapData.ImageFormat = ImageFormat.Bmp;
+                        break;
+                    case "public.jpeg":
+                        bitmapData.ImageFormat = ImageFormat.Jpeg;
+                        break;
+                    case "public.png":
+                        bitmapData.ImageFormat = ImageFormat.Png;
+                        break;
+                    default:
+                        throw new NotSupportedException("Provided image format is not supported");
+                }
+            }
+                   
             return bitmapData;
         }
 

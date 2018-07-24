@@ -8,7 +8,7 @@
             set;
         }
 
-        public int Stride
+        public ImageFormat ImageFormat
         {
             get;
             set;
@@ -19,5 +19,12 @@
             get;
             set;
         }
+    }
+
+    public enum ImageFormat
+    {
+        Bmp,
+        Jpeg,
+        Png,
     }
 }

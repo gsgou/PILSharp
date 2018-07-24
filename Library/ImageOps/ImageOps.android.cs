@@ -1,18 +1,39 @@
-﻿using Android.Graphics;
+﻿using System;
 
+using Android.Graphics;
 namespace PILSharp
 {
     public static partial class ImageOps
     {
         static BitmapData PlatformGetBitmapData(byte[] imageData)
         {
-            Bitmap bitmap = BitmapFactory.DecodeByteArray(imageData, 0, imageData.Length);
-
             var bitmapData = new BitmapData();
-            bitmapData.Width = bitmap.Width;
-            bitmapData.Height = bitmap.Height;
-            bitmapData.Stride = bitmap.RowBytes;
-            //bitmapData.Stride = (int)bitmap.GetBitmapInfo().Stride;
+
+            using (var options = new BitmapFactory.Options())
+            {
+                options.InJustDecodeBounds = true;
+                BitmapFactory.DecodeByteArray(imageData, 0, imageData.Length, options);
+
+                bitmapData.Width = options.OutWidth;
+                bitmapData.Height = options.OutHeight;
+                switch (options.OutMimeType)
+                {
+                    case "image/bmp":
+                        bitmapData.ImageFormat = ImageFormat.Bmp;
+                        break;
+                    case "image/jpeg":
+                        bitmapData.ImageFormat = ImageFormat.Jpeg;
+                        break;
+                    case "image/jpg":
+                        bitmapData.ImageFormat = ImageFormat.Jpeg;
+                        break;
+                    case "image/png":
+                        bitmapData.ImageFormat = ImageFormat.Png;
+                        break;
+                    default:
+                        throw new NotSupportedException("Provided image format is not supported");
+                }
+            }
 
             return bitmapData;
         }
