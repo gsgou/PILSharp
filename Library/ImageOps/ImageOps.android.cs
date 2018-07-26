@@ -40,6 +40,8 @@ namespace PILSharp
             return bitmapData;
         }
 
+        #region PlatformEqualize
+
         static byte[] PlatformEqualize(byte[] imageData, PILBitmapData bitmapData)
         {
             return EqualizeWithOpenGL(imageData, bitmapData);
@@ -49,7 +51,7 @@ namespace PILSharp
         // https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//AutoFixEffect.java
         static byte[] EqualizeWithOpenGL(byte[] imageData, PILBitmapData bitmapData)
         {
-            byte[] result;
+            byte[] result = Array.Empty<byte>();
 
             using (var effectSurface = new EffectSurface(bitmapData))
             {
@@ -64,5 +66,7 @@ namespace PILSharp
         //{
         //    throw new System.NotImplementedException();
         //}
+
+        #endregion
     }
 }

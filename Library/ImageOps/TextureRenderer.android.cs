@@ -108,30 +108,13 @@ namespace PILSharp
                 pixelBuf.Rewind();
                 GLES20.GlReadPixels(0, 0, _texWidth, _texHeight, GLES20.GlRgba, GLES20.GlUnsignedByte, pixelBuf);
 
-                using (var bmp = Bitmap.CreateBitmap(_texWidth, _texHeight, Bitmap.Config.Argb8888))
+                using (var bitmap = Bitmap.CreateBitmap(_texWidth, _texHeight, Bitmap.Config.Argb8888))
                 {
                     pixelBuf.Rewind();
-                    bmp.CopyPixelsFromBuffer(pixelBuf);
+                    bitmap.CopyPixelsFromBuffer(pixelBuf);
+                    imageBytes = bitmap.ToByteArray(imageFormat);
 
-                    using (var stream = new MemoryStream())
-                    {
-                        switch (imageFormat)
-                        {
-                            case ImageFormat.Bmp:
-                                imageBytes = bmp.AsBMP();
-                                break;
-                            case ImageFormat.Jpeg:
-                                bmp.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
-                                imageBytes = stream.ToArray();
-                                break;
-                            case ImageFormat.Png:
-                                bmp.Compress(Bitmap.CompressFormat.Png, 100, stream);
-                                imageBytes = stream.ToArray();
-                                break;
-                        }
-                    }
-
-                    bmp.Recycle();
+                    bitmap.Recycle();
                 }
             }
 

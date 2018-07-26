@@ -29,7 +29,7 @@ namespace PILSharp
             _bitmapData = bitmapData;
             if (_bitmapData.Width <= 0 || _bitmapData.Height <= 0)
             {
-                throw new IllegalArgumentException();
+                throw new ArgumentException();
             }
 
             EGLSetup();
@@ -205,6 +205,10 @@ namespace PILSharp
                 matrix.PreScale(sx, sy);
                 Bitmap output = Bitmap.CreateBitmap(source, 0, 0, source.Width, source.Height, matrix, false);
                 output.Density = (int)DisplayMetricsDensity.Default;
+
+                source.Recycle();
+                source.Dispose();
+
                 return output;
             }
         }

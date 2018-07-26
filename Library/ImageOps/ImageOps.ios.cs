@@ -131,24 +131,7 @@ namespace PILSharp
             using (var destCGImage = destContext.ToImage())
             using (var destImage = new UIImage(destCGImage))
             {
-                if (bitmapData.ImageFormat == ImageFormat.Bmp)
-                {
-                    destDataArray = destImage.AsBMP();
-                }
-                else
-                {
-                    NSData destData = null;
-                    if (bitmapData.ImageFormat == ImageFormat.Jpeg)
-                    {
-                        destData = destImage.AsJPEG();
-                    }
-                    else if (bitmapData.ImageFormat == ImageFormat.Png)
-                    {
-                        destData = destImage.AsPNG();
-                    }
-                    destDataArray = destData.ToArray();
-                    destData.Dispose();
-                }
+                destDataArray = destImage.ToByteArray(bitmapData.ImageFormat);
             }
 
             if (srcArrayHandle.IsAllocated)

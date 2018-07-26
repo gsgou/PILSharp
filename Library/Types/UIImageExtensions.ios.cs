@@ -2,17 +2,48 @@ using System;
 using System.Runtime.InteropServices;
 
 using CoreGraphics;
+using Foundation;
 using UIKit;
 
 namespace PILSharp
 {
     public static class UIImageExtensions
     {
+        static void CopyFlipPixel(byte[] src, int srcOffset, byte[] dst, int dstOffset)
+        {
+            int s = srcOffset;
+            int d = dstOffset + 2;
+            dst[d--] = src[s++];          // R
+            dst[d--] = src[s++];          // G
+            dst[d--] = src[s++];          // B
+            dst[dstOffset + 3] = src[s];  // Alpha
+        }
+
+        static void SetShort(byte[] src, int offset, UInt16 v)
+        {
+            var bytes = BitConverter.GetBytes(v);
+            if (!BitConverter.IsLittleEndian)
+            { 
+                Array.Reverse(bytes); 
+            }
+            Array.Copy(bytes, 0, src, offset, bytes.Length);
+        }
+
+        static void SetLong(byte[] src, int offset, UInt32 v)
+        {
+            var bytes = BitConverter.GetBytes(v);
+            if (!BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(bytes);
+            }
+            Array.Copy(bytes, 0, src, offset, bytes.Length);
+        }
+
         internal static byte[] AsBMP(this UIImage uiImage)
         {
             if (uiImage == null)
             {
-                return null;
+                throw new ArgumentException();
             }
 
             int width = (int)uiImage.Size.Width;
@@ -74,34 +105,39 @@ namespace PILSharp
             return result;
         }
 
-        static void CopyFlipPixel(byte[] src, int srcOffset, byte[] dst, int dstOffset)
+        internal static byte[] ToByteArray(this UIImage uiImage, PILImageFormat imageFormat)
         {
-            int s = srcOffset;
-            int d = dstOffset + 2;
-            dst[d--] = src[s++];          // R
-            dst[d--] = src[s++];          // G
-            dst[d--] = src[s++];          // B
-            dst[dstOffset + 3] = src[s];  // Alpha
-        }
-
-        static void SetShort(byte[] src, int offset, UInt16 v)
-        {
-            var bytes = BitConverter.GetBytes(v);
-            if (!BitConverter.IsLittleEndian)
-            { 
-                Array.Reverse(bytes); 
-            }
-            Array.Copy(bytes, 0, src, offset, bytes.Length);
-        }
-
-        static void SetLong(byte[] src, int offset, UInt32 v)
-        {
-            var bytes = BitConverter.GetBytes(v);
-            if (!BitConverter.IsLittleEndian)
+            if (uiImage == null)
             {
-                Array.Reverse(bytes);
+                throw new ArgumentException();
             }
-            Array.Copy(bytes, 0, src, offset, bytes.Length);
+
+            byte[] result = Array.Empty<byte>();
+
+            if (imageFormat == PILImageFormat.Bmp)
+            {
+                result = uiImage.AsBMP();
+            }
+            else
+            {
+                NSData destData = null;
+                if (imageFormat == PILImageFormat.Jpeg)
+                {
+                    destData = uiImage.AsJPEG();
+                }
+                else if (imageFormat == PILImageFormat.Png)
+                {
+                    destData = uiImage.AsPNG();
+                }
+                result = destData.ToArray();
+                destData.Dispose();
+            }
+
+            return result;
+        }
+        {
+            {
+            }
         }
     }
 }

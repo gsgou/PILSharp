@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 using Android.Graphics;
 using Android.Runtime;
@@ -8,12 +9,36 @@ namespace PILSharp
 {
     public static class BitmapExtensions
     {
+        // Write integer to little-endian
+        static byte[] writeInt(int value)
+        {
+            byte[] b = new byte[4];
+
+            b[0] = (byte)(value & 0x000000FF);
+            b[1] = (byte)((value & 0x0000FF00) >> 8);
+            b[2] = (byte)((value & 0x00FF0000) >> 16);
+            b[3] = (byte)((value & 0xFF000000) >> 24);
+
+            return b;
+        }
+
+        // Write short to little-endian byte array
+        static byte[] writeShort(short value)
+        {
+            byte[] b = new byte[2];
+
+            b[0] = (byte)(value & 0x00FF);
+            b[1] = (byte)((value & 0xFF00) >> 8);
+
+            return b;
+        }
+
         // Android Bitmap Object to Window's v3 24bit Bmp Format File
         internal static byte[] AsBMP(this Bitmap bitmap)
         {
             if (bitmap == null)
             {
-                return null;
+                throw new ArgumentException();
             }
 
             // Image size
@@ -22,7 +47,7 @@ namespace PILSharp
 
             // Image dummy data size
             // Reason: the amount of bytes per image row must be a multiple of 4 (requirements of bmp format)
-            byte[] dummyBytesPerRow = null;
+            byte[] dummyBytesPerRow = Array.Empty<byte>(); ;
             bool hasDummy = false;
             // Source image width * number of bytes to encode one pixel.
             const int BYTE_PER_PIXEL = 3;
@@ -109,7 +134,7 @@ namespace PILSharp
 
             // This while loop is a lengthy process
             // Puts take a while so only do one by creating a big array called final
-            byte[] final = new byte[0];
+            byte[] final = Array.Empty<byte>();
             while (row > 0)
             {
                 // This array is also used to cut down on time of puts
@@ -149,28 +174,39 @@ namespace PILSharp
             return result;
         }
 
-        // Write integer to little-endian
-        static byte[] writeInt(int value)
+        internal static byte[] ToByteArray(this Bitmap bitmap, PILImageFormat imageFormat)
         {
-            byte[] b = new byte[4];
+            if (bitmap == null)
+            {
+                throw new ArgumentException();
+            }
 
-            b[0] = (byte)(value & 0x000000FF);
-            b[1] = (byte)((value & 0x0000FF00) >> 8);
-            b[2] = (byte)((value & 0x00FF0000) >> 16);
-            b[3] = (byte)((value & 0xFF000000) >> 24);
+            byte[] result = Array.Empty<byte>();
 
-            return b;
+            using (var stream = new MemoryStream())
+            {
+                switch (imageFormat)
+                {
+                    case PILImageFormat.Bmp:
+                        result = bitmap.AsBMP();
+                        break;
+                    case PILImageFormat.Jpeg:
+                        bitmap.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
+                        result = stream.ToArray();
+                        break;
+                    case PILImageFormat.Png:
+                        bitmap.Compress(Bitmap.CompressFormat.Png, 100, stream);
+                        result = stream.ToArray();
+                        break;
+                }
+            }
+
+            return result;
         }
 
-        // Write short to little-endian byte array
-        static byte[] writeShort(short value)
         {
-            byte[] b = new byte[2];
 
-            b[0] = (byte)(value & 0x00FF);
-            b[1] = (byte)((value & 0xFF00) >> 8);
 
-            return b;
         }
     }
 }
