@@ -7,5 +7,8 @@
 
         static byte[] PlatformEqualize(byte[] imageData, PILBitmapData bitmapData) =>
             throw new NotImplementedInReferenceAssemblyException();
+
+        static byte[] PlatformExpand(byte[] imageData, PILBitmapData bitmapData, PILThickness border, PILColor? fill = null) =>
+            throw new NotImplementedInReferenceAssemblyException();
     }
 }

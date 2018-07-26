@@ -13,6 +13,7 @@ PILSharp is focused on the following platforms:
 ## Current APIs:
 The following cross-platform APIs are available in PILSharp:
 - [x] Equalize (Equalize the image histogram.)
+- [x] Expand (Add border to the image.)
 
 ## Building PILSharp
 PILSharp is built with the new SDK style projects with multi-targeting enabled. 

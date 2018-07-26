@@ -68,5 +68,21 @@ namespace PILSharp
         //}
 
         #endregion
+    
+        static byte[] PlatformExpand(byte[] imageData, PILBitmapData bitmapData, PILThickness border, PILColor? fill = null)
+        {
+            byte[] result = Array.Empty<byte>();
+
+            using (var originalImage = BitmapFactory.DecodeByteArray(imageData, 0, imageData.Length))
+            using (var resultImage = originalImage.Expand(border, fill))
+            {
+                result = resultImage.ToByteArray(bitmapData.ImageFormat);
+
+                originalImage.Recycle();
+                resultImage.Recycle();
+            }
+
+            return result;
+        }
     }
 }

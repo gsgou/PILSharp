@@ -204,9 +204,29 @@ namespace PILSharp
             return result;
         }
 
+        internal static Bitmap Expand(this Bitmap bitmap, PILThickness border, PILColor? fill = null)
         {
+            if (bitmap == null)
+            {
+                throw new ArgumentException();
+            }
 
+            if (!fill.HasValue)
+            {
+                // Transparent as default color
+                fill = new PILColor(255, 255, 255, 0);
+            }
 
+            Bitmap resultImage = Bitmap.CreateBitmap(bitmap.Width + (int)border.HorizontalThickness,
+                                                     bitmap.Height + (int)border.VerticalThickness,
+                                                     Bitmap.Config.Argb8888);
+            using (var canvas = new Canvas(resultImage))
+            {
+                canvas.DrawColor(fill.Value.ToAndroid());
+                canvas.DrawBitmap(bitmap, (float)border.Left, (float)border.Top, null);
+            }
+
+            return resultImage;
         }
     }
 }

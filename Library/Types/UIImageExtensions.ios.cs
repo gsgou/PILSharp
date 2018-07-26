@@ -135,9 +135,50 @@ namespace PILSharp
 
             return result;
         }
+    
+        public static UIImage Expand(this UIImage uiImage, PILThickness border, PILColor? fill = null)
         {
+            if (uiImage == null)
             {
+                throw new ArgumentException();
             }
+
+            if (!fill.HasValue)
+            {
+                // Transparent as default color
+                fill = new PILColor(255, 255, 255, 0);
+            }
+
+            CGSize newSize = new CGSize(uiImage.Size.Width + (nfloat)border.HorizontalThickness,
+                                        uiImage.Size.Height + (nfloat)border.VerticalThickness);
+
+            // Use UIGraphicsBeginImageContextWithOptions to take the scale into consideration
+            UIGraphics.BeginImageContextWithOptions(newSize, false, 0);
+            CGContext context = UIGraphics.GetCurrentContext();
+
+            context.SetAllowsAntialiasing(true);
+            context.SetShouldAntialias(true);
+            // Set the quality level to use when rescaling
+            context.InterpolationQuality = CGInterpolationQuality.High;
+
+            CGRect newRect = new CGRect(new CGPoint(), newSize);
+            // Flip the context because UIKit coordinate system is upside down to Quartz coordinate system.
+            context.ScaleCTM(1, -1);
+            context.TranslateCTM(0, -newRect.Size.Height);
+            // Fill with color
+            context.SetFillColor(fill.Value.ToCGColor());
+            context.FillRect(newRect);
+            // Draw image
+            CGRect imageSizeRect = new CGRect(border.Left, border.Top, uiImage.Size.Width, uiImage.Size.Height);
+            using (var cgImage = uiImage.CGImage)
+            {
+                context.DrawImage(imageSizeRect, cgImage);
+            }
+
+            UIImage imageFromCurrentImageContext = UIGraphics.GetImageFromCurrentImageContext();
+            UIGraphics.EndImageContext();
+
+            return imageFromCurrentImageContext;
         }
     }
 }

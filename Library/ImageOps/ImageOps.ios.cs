@@ -188,5 +188,18 @@ namespace PILSharp
 
             return image;
         }
+    
+        static byte[] PlatformExpand(byte[] imageData, PILBitmapData bitmapData, PILThickness border, PILColor? fill = null)
+        {
+            byte[] result = Array.Empty<byte>();
+
+            using (var originalImage = UIImageFromByteArray(imageData))
+            using (var expandedImage = originalImage.Expand(border, fill))
+            {
+                result = expandedImage.ToByteArray(bitmapData.ImageFormat);
+            }
+
+            return result;
+        }
     }
 }
