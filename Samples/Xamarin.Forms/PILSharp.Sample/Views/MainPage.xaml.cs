@@ -56,12 +56,16 @@ namespace PILSharp.Sample
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            var equalizedDataNative = PILSharp.ImageOps.Equalize(imageData, bitmapData);
+            var result = PILSharp.ImageOps.Equalize(imageData, bitmapData);
+
+            //var border = new PILSharp.PILThickness(20d, 10d, 40d, 20d);
+            //var fill = new PILSharp.PILColor(0, 0, 0, 255);
+            //var result = PILSharp.ImageOps.Expand(imageData, bitmapData, border, fill);
 
             stopwatch.Stop();
             elapsedTime = stopwatch.ElapsedMilliseconds;
 
-            return ImageSource.FromStream(() => new MemoryStream(equalizedDataNative));
+            return ImageSource.FromStream(() => new MemoryStream(result));
         }
     }
 }

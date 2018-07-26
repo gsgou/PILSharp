@@ -136,7 +136,7 @@
       <Version>3.1.0.637273</Version>
     </PackageReference>
     <PackageReference Include="PILSharp">
-      <Version>0.2.0</Version>
+      <Version>0.3.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
