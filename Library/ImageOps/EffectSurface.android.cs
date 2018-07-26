@@ -13,7 +13,7 @@ namespace PILSharp
 {
     class EffectSurface : Object
     {
-        BitmapData _bitmapData;
+        PILBitmapData _bitmapData;
 
         int[] _textures = new int[2];
         TextureRenderer _textureRenderer;
@@ -24,7 +24,7 @@ namespace PILSharp
 
         // Creates an OutputSurface with the specified dimensions.
         // The new EGL context and surface will be made current.
-        public EffectSurface(BitmapData bitmapData)
+        public EffectSurface(PILBitmapData bitmapData)
         {
             _bitmapData = bitmapData;
             if (_bitmapData.Width <= 0 || _bitmapData.Height <= 0)

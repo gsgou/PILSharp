@@ -11,9 +11,9 @@ namespace PILSharp
 {
     public static partial class ImageOps
     {
-        static BitmapData PlatformGetBitmapData(byte[] imageData)
+        static PILBitmapData PlatformGetBitmapData(byte[] imageData)
         {
-            var bitmapData = new BitmapData();
+            var bitmapData = new PILBitmapData();
 
             using (var cgImage = CGImageFromByteArray(imageData))
             {
@@ -22,13 +22,13 @@ namespace PILSharp
                 switch (cgImage.UTType)
                 {
                     case "com.microsoft.bmp":
-                        bitmapData.ImageFormat = ImageFormat.Bmp;
+                        bitmapData.ImageFormat = PILImageFormat.Bmp;
                         break;
                     case "public.jpeg":
-                        bitmapData.ImageFormat = ImageFormat.Jpeg;
+                        bitmapData.ImageFormat = PILImageFormat.Jpeg;
                         break;
                     case "public.png":
-                        bitmapData.ImageFormat = ImageFormat.Png;
+                        bitmapData.ImageFormat = PILImageFormat.Png;
                         break;
                     default:
                         throw new NotSupportedException("Provided image format is not supported");
@@ -46,7 +46,7 @@ namespace PILSharp
             return (vImageError)(long)vImageEqualization_ARGB8888(ref src, ref dest, flags);
         }
 
-        static byte[] PlatformEqualize(byte[] imageData, BitmapData bitmapData)
+        static byte[] PlatformEqualize(byte[] imageData, PILBitmapData bitmapData)
         {
             const int bytesPerPixel = 4;
             const int bitsPerComponent = 8;

@@ -2,10 +2,10 @@
 {
     public static partial class ImageOps
     {
-        static BitmapData PlatformGetBitmapData(byte[] imageData) =>
+        static PILBitmapData PlatformGetBitmapData(byte[] imageData) =>
             throw new NotImplementedInReferenceAssemblyException();
 
-        static byte[] PlatformEqualize(byte[] imageData, BitmapData bitmapData) =>
+        static byte[] PlatformEqualize(byte[] imageData, PILBitmapData bitmapData) =>
             throw new NotImplementedInReferenceAssemblyException();
     }
 }

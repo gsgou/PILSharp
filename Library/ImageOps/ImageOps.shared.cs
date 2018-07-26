@@ -2,10 +2,10 @@
 {
     public static partial class ImageOps
     {
-        public static BitmapData GetBitmapData(byte[] imageData) =>
+        public static PILBitmapData GetBitmapData(byte[] imageData) =>
             PlatformGetBitmapData(imageData);
 
-        public static byte[] Equalize(byte[] imageData, BitmapData bitmapData) =>
+        public static byte[] Equalize(byte[] imageData, PILBitmapData bitmapData) =>
             PlatformEqualize(imageData, bitmapData);
     }
 }

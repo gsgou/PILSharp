@@ -85,7 +85,7 @@ namespace PILSharp
         }
 
         // Get's the image bytes of the current frame as a JPEG image.
-        public byte[] GetImageBytes(ImageFormat imageFormat)
+        public byte[] GetImageBytes(PILImageFormat imageFormat)
         {
             // glReadPixels gives us a ByteBuffer filled with what is essentially big-endian RGBA
             // data. To use the Bitmap constructor that takes an int[] array with pixel data, 

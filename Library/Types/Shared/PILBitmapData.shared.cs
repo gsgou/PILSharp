@@ -1,6 +1,6 @@
 ﻿namespace PILSharp
 {
-    public class BitmapData
+    public class PILBitmapData
     {
         public int Height
         {
@@ -8,7 +8,7 @@
             set;
         }
 
-        public ImageFormat ImageFormat
+        public PILImageFormat ImageFormat
         {
             get;
             set;
@@ -21,7 +21,7 @@
         }
     }
 
-    public enum ImageFormat
+    public enum PILImageFormat
     {
         Bmp,
         Jpeg,

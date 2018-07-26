@@ -7,9 +7,9 @@ namespace PILSharp
 {
     public static partial class ImageOps
     {
-        static BitmapData PlatformGetBitmapData(byte[] imageData)
+        static PILBitmapData PlatformGetBitmapData(byte[] imageData)
         {
-            var bitmapData = new BitmapData();
+            var bitmapData = new PILBitmapData();
 
             using (var options = new BitmapFactory.Options())
             {
@@ -21,16 +21,16 @@ namespace PILSharp
                 switch (options.OutMimeType)
                 {
                     case "image/bmp":
-                        bitmapData.ImageFormat = ImageFormat.Bmp;
+                        bitmapData.ImageFormat = PILImageFormat.Bmp;
                         break;
                     case "image/jpeg":
-                        bitmapData.ImageFormat = ImageFormat.Jpeg;
+                        bitmapData.ImageFormat = PILImageFormat.Jpeg;
                         break;
                     case "image/jpg":
-                        bitmapData.ImageFormat = ImageFormat.Jpeg;
+                        bitmapData.ImageFormat = PILImageFormat.Jpeg;
                         break;
                     case "image/png":
-                        bitmapData.ImageFormat = ImageFormat.Png;
+                        bitmapData.ImageFormat = PILImageFormat.Png;
                         break;
                     default:
                         throw new NotSupportedException("Provided image format is not supported");
@@ -40,14 +40,14 @@ namespace PILSharp
             return bitmapData;
         }
 
-        static byte[] PlatformEqualize(byte[] imageData, BitmapData bitmapData)
+        static byte[] PlatformEqualize(byte[] imageData, PILBitmapData bitmapData)
         {
             return EqualizeWithOpenGL(imageData, bitmapData);
         }
 
         // https://developer.android.com/reference/android/media/effect/EffectFactory#EFFECT_AUTOFIX
         // https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//AutoFixEffect.java
-        static byte[] EqualizeWithOpenGL(byte[] imageData, BitmapData bitmapData)
+        static byte[] EqualizeWithOpenGL(byte[] imageData, PILBitmapData bitmapData)
         {
             byte[] result;
 
