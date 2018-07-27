@@ -11,7 +11,7 @@ namespace PILSharp
 {
     public static partial class ImageOps
     {
-        static PILBitmapData PlatformGetBitmapData(byte[] imageData)
+        static PILBitmapData GetPILBitmapData(byte[] imageData)
         {
             var bitmapData = new PILBitmapData();
 
@@ -34,9 +34,51 @@ namespace PILSharp
                         throw new NotSupportedException("Provided image format is not supported");
                 }
             }
-                   
+
             return bitmapData;
         }
+
+        static UIImage UIImageFromByteArray(byte[] data)
+        {
+            if (!(data?.Length > 0))
+            {
+                return null;
+            }
+
+            UIImage image = null;
+            try
+            {
+                image = new UIImage(NSData.FromArray(data));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Image load failed: " + ex.Message);
+            }
+            return image;
+        }
+
+        static CGImage CGImageFromByteArray(byte[] data)
+        {
+            if (!(data?.Length > 0))
+            {
+                return null;
+            }
+
+            CGImage image = null;
+            using (var imageSource = CGImageSource.FromData(NSData.FromArray(data)))
+            {
+                var decodeOptions = new CGImageOptions
+                {
+                    ShouldAllowFloat = false,
+                    ShouldCache = false
+                };
+                image = imageSource.CreateImage(0, decodeOptions);
+            }
+
+            return image;
+        }
+
+        #region PlatformEqualize
 
         const string AccelerateImageLibrary = "/System/Library/Frameworks/Accelerate.framework/Frameworks/vImage.framework/vImage";
         [DllImport(AccelerateImageLibrary)]
@@ -46,8 +88,10 @@ namespace PILSharp
             return (vImageError)(long)vImageEqualization_ARGB8888(ref src, ref dest, flags);
         }
 
-        static byte[] PlatformEqualize(byte[] imageData, PILBitmapData bitmapData)
+        static byte[] PlatformEqualize(byte[] imageData)
         {
+            PILBitmapData bitmapData = GetPILBitmapData(imageData);
+
             const int bytesPerPixel = 4;
             const int bitsPerComponent = 8;
             const CGBitmapFlags flags = CGBitmapFlags.PremultipliedFirst | CGBitmapFlags.ByteOrder32Big;
@@ -149,57 +193,24 @@ namespace PILSharp
             return destDataArray;
         }
 
-        static UIImage UIImageFromByteArray(byte[] data)
-        {
-            if (!(data?.Length > 0))
-            {
-                return null;
-            }
+        #endregion
 
-            UIImage image = null;
-            try
-            {
-                image = new UIImage(NSData.FromArray(data));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Image load failed: " + ex.Message);
-            }
-            return image;
-        }
+        #region PlatformExpand
 
-        static CGImage CGImageFromByteArray(byte[] data)
-        {
-            if (!(data?.Length > 0))
-            {
-                return null;
-            }
-
-            CGImage image = null;
-            using (var imageSource = CGImageSource.FromData(NSData.FromArray(data)))
-            {
-                var decodeOptions = new CGImageOptions
-                {
-                    ShouldAllowFloat = false,
-                    ShouldCache = false
-                };
-                image = imageSource.CreateImage(0, decodeOptions);
-            }
-
-            return image;
-        }
-    
-        static byte[] PlatformExpand(byte[] imageData, PILBitmapData bitmapData, PILThickness border, PILColor? fill = null)
+        static byte[] PlatformExpand(byte[] imageData, PILThickness border, PILColor? fill = null)
         {
             byte[] result = Array.Empty<byte>();
 
             using (var originalImage = UIImageFromByteArray(imageData))
             using (var expandedImage = originalImage.Expand(border, fill))
             {
+                PILBitmapData bitmapData = GetPILBitmapData(imageData);
                 result = expandedImage.ToByteArray(bitmapData.Format);
             }
 
             return result;
         }
+
+        #endregion
     }
 }

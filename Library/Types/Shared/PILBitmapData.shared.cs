@@ -1,27 +1,27 @@
 ﻿namespace PILSharp
 {
-    public class PILBitmapData
+    class PILBitmapData
     {
-        public int Height
+        internal int Height
         {
             get;
             set;
         }
 
-        public Format Format
+        internal Format Format
         {
             get;
             set;
         }
 
-        public int Width
+        internal int Width
         {
             get;
             set;
         }
     }
 
-    public enum Format
+    enum Format
     {
         Bmp,
         Jpeg,

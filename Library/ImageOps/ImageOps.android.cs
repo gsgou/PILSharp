@@ -7,7 +7,7 @@ namespace PILSharp
 {
     public static partial class ImageOps
     {
-        static PILBitmapData PlatformGetBitmapData(byte[] imageData)
+        static PILBitmapData GetPILBitmapData(byte[] imageData)
         {
             var bitmapData = new PILBitmapData();
 
@@ -42,17 +42,18 @@ namespace PILSharp
 
         #region PlatformEqualize
 
-        static byte[] PlatformEqualize(byte[] imageData, PILBitmapData bitmapData)
+        static byte[] PlatformEqualize(byte[] imageData)
         {
-            return EqualizeWithOpenGL(imageData, bitmapData);
+            return EqualizeWithOpenGL(imageData);
         }
 
         // https://developer.android.com/reference/android/media/effect/EffectFactory#EFFECT_AUTOFIX
         // https://github.com/krazykira/VidEffects/blob/master/videffects/src/main/java/com/sherazkhilji/videffects//AutoFixEffect.java
-        static byte[] EqualizeWithOpenGL(byte[] imageData, PILBitmapData bitmapData)
+        static byte[] EqualizeWithOpenGL(byte[] imageData)
         {
             byte[] result = Array.Empty<byte>();
 
+            PILBitmapData bitmapData = GetPILBitmapData(imageData);
             using (var effectSurface = new EffectSurface(bitmapData))
             {
                 result = effectSurface.DrawImage(imageData, true, EffectFactory.EffectAutofix);
@@ -68,14 +69,17 @@ namespace PILSharp
         //}
 
         #endregion
-    
-        static byte[] PlatformExpand(byte[] imageData, PILBitmapData bitmapData, PILThickness border, PILColor? fill = null)
+
+        #region PlatformExpand
+
+        static byte[] PlatformExpand(byte[] imageData, PILThickness border, PILColor? fill = null)
         {
             byte[] result = Array.Empty<byte>();
 
             using (var originalImage = BitmapFactory.DecodeByteArray(imageData, 0, imageData.Length))
             using (var resultImage = originalImage.Expand(border, fill))
             {
+                PILBitmapData bitmapData = GetPILBitmapData(imageData);
                 result = resultImage.ToByteArray(bitmapData.Format);
 
                 originalImage.Recycle();
@@ -84,5 +88,7 @@ namespace PILSharp
 
             return result;
         }
+
+        #endregion
     }
 }
