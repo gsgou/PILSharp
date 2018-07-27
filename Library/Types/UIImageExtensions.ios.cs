@@ -136,7 +136,7 @@ namespace PILSharp
             return result;
         }
     
-        public static UIImage Expand(this UIImage uiImage, PILThickness border, PILColor? fill = null)
+        internal static UIImage Expand(this UIImage uiImage, PILThickness border, PILColor? fill = null)
         {
             if (uiImage == null)
             {
