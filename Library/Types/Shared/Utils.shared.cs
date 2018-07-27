@@ -7,7 +7,7 @@ namespace PILSharp
 {
     class Utils
     {
-        internal static PILImageFormat GetImageFormat(byte[] bytes)
+        internal static Format GetFormat(byte[] bytes)
         {
             // BMP
             var bmp = new byte[] { 66, 77 };
@@ -20,22 +20,22 @@ namespace PILSharp
 
             if (bmp.SequenceEqual(bytes.Take(bmp.Length)))
             {
-                return PILImageFormat.Bmp;
+                return Format.Bmp;
             }
 
             if (jpeg.SequenceEqual(bytes.Take(jpeg.Length)))
             {
-                return PILImageFormat.Jpeg;
+                return Format.Jpeg;
             }
 
             if (jpeg2.SequenceEqual(bytes.Take(jpeg2.Length)))
             {
-                return PILImageFormat.Jpeg;
+                return Format.Jpeg;
             }
 
             if (png.SequenceEqual(bytes.Take(png.Length)))
             {
-                return PILImageFormat.Png;
+                return Format.Png;
             }
             
             throw new NotSupportedException($"Provided image format is not supported");

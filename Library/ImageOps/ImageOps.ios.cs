@@ -22,13 +22,13 @@ namespace PILSharp
                 switch (cgImage.UTType)
                 {
                     case "com.microsoft.bmp":
-                        bitmapData.ImageFormat = PILImageFormat.Bmp;
+                        bitmapData.Format = Format.Bmp;
                         break;
                     case "public.jpeg":
-                        bitmapData.ImageFormat = PILImageFormat.Jpeg;
+                        bitmapData.Format = Format.Jpeg;
                         break;
                     case "public.png":
-                        bitmapData.ImageFormat = PILImageFormat.Png;
+                        bitmapData.Format = Format.Png;
                         break;
                     default:
                         throw new NotSupportedException("Provided image format is not supported");
@@ -131,7 +131,7 @@ namespace PILSharp
             using (var destCGImage = destContext.ToImage())
             using (var destImage = new UIImage(destCGImage))
             {
-                destDataArray = destImage.ToByteArray(bitmapData.ImageFormat);
+                destDataArray = destImage.ToByteArray(bitmapData.Format);
             }
 
             if (srcArrayHandle.IsAllocated)
@@ -196,7 +196,7 @@ namespace PILSharp
             using (var originalImage = UIImageFromByteArray(imageData))
             using (var expandedImage = originalImage.Expand(border, fill))
             {
-                result = expandedImage.ToByteArray(bitmapData.ImageFormat);
+                result = expandedImage.ToByteArray(bitmapData.Format);
             }
 
             return result;

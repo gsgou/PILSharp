@@ -164,7 +164,7 @@ namespace PILSharp
             // Draws the data from SurfaceTexture onto the current EGL surface.
             _textureRenderer.RenderTexture(_textures[1]);
 
-            return _textureRenderer.GetImageBytes(_bitmapData.ImageFormat);
+            return _textureRenderer.GetImageBytes(_bitmapData.Format);
         }
 
         protected override void Dispose(bool disposing)

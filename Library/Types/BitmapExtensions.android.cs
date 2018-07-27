@@ -174,7 +174,7 @@ namespace PILSharp
             return result;
         }
 
-        internal static byte[] ToByteArray(this Bitmap bitmap, PILImageFormat imageFormat)
+        internal static byte[] ToByteArray(this Bitmap bitmap, Format imageFormat)
         {
             if (bitmap == null)
             {
@@ -187,14 +187,14 @@ namespace PILSharp
             {
                 switch (imageFormat)
                 {
-                    case PILImageFormat.Bmp:
+                    case Format.Bmp:
                         result = bitmap.AsBMP();
                         break;
-                    case PILImageFormat.Jpeg:
+                    case Format.Jpeg:
                         bitmap.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
                         result = stream.ToArray();
                         break;
-                    case PILImageFormat.Png:
+                    case Format.Png:
                         bitmap.Compress(Bitmap.CompressFormat.Png, 100, stream);
                         result = stream.ToArray();
                         break;

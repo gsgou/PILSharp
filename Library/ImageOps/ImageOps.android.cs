@@ -21,16 +21,16 @@ namespace PILSharp
                 switch (options.OutMimeType)
                 {
                     case "image/bmp":
-                        bitmapData.ImageFormat = PILImageFormat.Bmp;
+                        bitmapData.Format = Format.Bmp;
                         break;
                     case "image/jpeg":
-                        bitmapData.ImageFormat = PILImageFormat.Jpeg;
+                        bitmapData.Format = Format.Jpeg;
                         break;
                     case "image/jpg":
-                        bitmapData.ImageFormat = PILImageFormat.Jpeg;
+                        bitmapData.Format = Format.Jpeg;
                         break;
                     case "image/png":
-                        bitmapData.ImageFormat = PILImageFormat.Png;
+                        bitmapData.Format = Format.Png;
                         break;
                     default:
                         throw new NotSupportedException("Provided image format is not supported");
@@ -76,7 +76,7 @@ namespace PILSharp
             using (var originalImage = BitmapFactory.DecodeByteArray(imageData, 0, imageData.Length))
             using (var resultImage = originalImage.Expand(border, fill))
             {
-                result = resultImage.ToByteArray(bitmapData.ImageFormat);
+                result = resultImage.ToByteArray(bitmapData.Format);
 
                 originalImage.Recycle();
                 resultImage.Recycle();

@@ -8,7 +8,7 @@
             set;
         }
 
-        public PILImageFormat ImageFormat
+        public Format Format
         {
             get;
             set;
@@ -21,7 +21,7 @@
         }
     }
 
-    public enum PILImageFormat
+    public enum Format
     {
         Bmp,
         Jpeg,

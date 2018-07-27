@@ -105,7 +105,7 @@ namespace PILSharp
             return result;
         }
 
-        internal static byte[] ToByteArray(this UIImage uiImage, PILImageFormat imageFormat)
+        internal static byte[] ToByteArray(this UIImage uiImage, Format imageFormat)
         {
             if (uiImage == null)
             {
@@ -114,18 +114,18 @@ namespace PILSharp
 
             byte[] result = Array.Empty<byte>();
 
-            if (imageFormat == PILImageFormat.Bmp)
+            if (imageFormat == Format.Bmp)
             {
                 result = uiImage.AsBMP();
             }
             else
             {
                 NSData destData = null;
-                if (imageFormat == PILImageFormat.Jpeg)
+                if (imageFormat == Format.Jpeg)
                 {
                     destData = uiImage.AsJPEG();
                 }
-                else if (imageFormat == PILImageFormat.Png)
+                else if (imageFormat == Format.Png)
                 {
                     destData = uiImage.AsPNG();
                 }
