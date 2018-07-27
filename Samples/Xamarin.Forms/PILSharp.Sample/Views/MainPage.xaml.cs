@@ -51,16 +51,15 @@ namespace PILSharp.Sample
         ImageSource Equalize(string resourceFileName, out long elapsedTime)
         {
             byte[] imageData = ResourceLoader.GetEmbeddedResourceBytes(assembly, resourceFileName);
-            var bitmapData = PILSharp.ImageOps.GetBitmapData(imageData);
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            var result = PILSharp.ImageOps.Equalize(imageData, bitmapData);
+            var result = PILSharp.ImageOps.Equalize(imageData);
 
             //var border = new PILSharp.PILThickness(20d, 10d, 40d, 20d);
             //var fill = new PILSharp.PILColor(0, 0, 0, 255);
-            //var result = PILSharp.ImageOps.Expand(imageData, bitmapData, border, fill);
+            //var result = PILSharp.ImageOps.Expand(imageData, border, fill);
 
             stopwatch.Stop();
             elapsedTime = stopwatch.ElapsedMilliseconds;
