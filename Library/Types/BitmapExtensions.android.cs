@@ -3,6 +3,9 @@ using System.IO;
 
 using Android.Graphics;
 using Android.Runtime;
+using Android.Support.V8.Renderscript;
+using Element = Android.Support.V8.Renderscript.Element;
+using Type = Android.Support.V8.Renderscript.Type;
 using Java.Nio;
 
 namespace PILSharp
@@ -227,6 +230,101 @@ namespace PILSharp
             }
 
             return resultImage;
+        }
+    
+        internal static Bitmap Fit(this Bitmap bitmap, int dstWidth, bool shouldAntialias = true)
+        {
+            if (bitmap == null)
+            {
+                throw new ArgumentException();
+            }
+
+            Bitmap dstBitmap = null;
+
+            int srcWidth = bitmap.Width;
+            int srcHeight = bitmap.Height;
+            float srcAspectRatio = (float)srcWidth / srcHeight;
+            int dstHeight = (int)(dstWidth / srcAspectRatio);
+
+            // Create the Renderscript context.
+            RenderScript renderScript = RenderScript.Create(Platform.CurrentActivity);
+            // Create an Allocation for the kernel inputs. Android.Renderscripts.AllocationUsage.Script int is 1
+            Allocation input = Allocation.CreateFromBitmap(renderScript, bitmap, Allocation.MipmapControl.MipmapFull, 1);
+            // Create an Allocation for the blurred output.
+            Allocation blurOutput = null;
+
+            // Alias free resize with RenderScript
+            // https://medium.com/@petrakeas/alias-free-resize-with-renderscript-5bf15a86ce3
+            if (shouldAntialias)
+            {
+                #region Calculate gaussian's radius
+
+                float resizeRatio = (float)srcWidth / dstWidth;
+                float sigma = resizeRatio / (float)Math.PI;
+                // https://android.googlesource.com/platform/frameworks/rs/+/master/cpu_ref/rsCpuIntrinsicBlur.cpp
+                float radius = 2.5f * sigma - 1.5f;
+                radius = Math.Min(25, Math.Max(0.0001f, radius));
+
+                #endregion
+
+                using (var inputType = input.Type)
+                using (var blurIntrinsic = ScriptIntrinsicBlur.Create(renderScript, Element.U8_4(renderScript)))
+                {
+                    // Assign the input Allocation to the script.
+                    blurIntrinsic.SetInput(input);
+
+                    // Set the blur radius.
+                    blurIntrinsic.SetRadius(radius);
+
+                    // We need to create an output allocation to hold the output of the Renderscript.
+                    blurOutput = Allocation.CreateTyped(renderScript, inputType);
+
+                    // This will run the script over each Element in the Allocation and copy it's output to filtered.
+                    blurIntrinsic.ForEach(blurOutput);
+
+                    // Cleanup.
+                    blurIntrinsic.Destroy();
+                    inputType.Destroy();
+                }
+            }
+
+            using (var outputType = (shouldAntialias == true) ?
+                                    Type.CreateXY(renderScript, blurOutput.Element, dstWidth, dstHeight) :
+                                    Type.CreateXY(renderScript, input.Element, dstWidth, dstHeight))
+            using (var output = Allocation.CreateTyped(renderScript, outputType))
+            using (var resizeIntrinsic = ScriptIntrinsicResize.Create(renderScript))
+            using (var bitmapConfig = bitmap.GetConfig())
+            {
+                if (shouldAntialias)
+                {
+                    resizeIntrinsic.SetInput(blurOutput);
+                }
+                else
+                {
+                    resizeIntrinsic.SetInput(input);
+                }
+
+                resizeIntrinsic.ForEach_bicubic(output);
+
+                // Copy the output to the destination bitmap.
+                dstBitmap = Bitmap.CreateBitmap(dstWidth, dstHeight, bitmapConfig);
+                output.CopyTo(dstBitmap);
+
+                // Cleanup.
+                resizeIntrinsic.Destroy();
+                output.Destroy();
+                outputType.Destroy();
+            }
+
+            // Cleanup.
+            blurOutput?.Destroy();
+            blurOutput?.Dispose();
+            input.Destroy();
+            input.Dispose();
+            renderScript.Destroy();
+            renderScript.Dispose();
+
+            return dstBitmap;
         }
     }
 }

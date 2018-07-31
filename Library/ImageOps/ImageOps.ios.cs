@@ -212,5 +212,81 @@ namespace PILSharp
         }
 
         #endregion
+    
+        #region PlatformFit
+
+        static byte[] PlatformFit(byte[] imageData, int dstWidth, bool shouldAntialias = true)
+        {
+            UIImage resizedImage = null;
+
+            PILBitmapData bitmapData = GetPILBitmapData(imageData);
+            nfloat srcWidth = bitmapData.Width;
+            nfloat srcHeight = bitmapData.Height;
+            nfloat srcAspectRatio = srcWidth / srcHeight;
+            int dstHeight = (int)(dstWidth / srcAspectRatio);
+
+            if (shouldAntialias)
+            {
+                // Create a 24bit RGB image.
+                using (var colorSpace = CGColorSpace.CreateGenericRgb())
+                using (var context = new CGBitmapContext(IntPtr.Zero,
+                                         dstWidth,
+                                         dstHeight,
+                                         8,
+                                         4 * dstWidth,
+                                         colorSpace,
+                                         CGImageAlphaInfo.PremultipliedFirst))
+                using (var uiImage = UIImageFromByteArray(imageData))
+                using (var cgImage = uiImage.CGImage)
+                {
+                    context.SetAllowsAntialiasing(true);
+                    context.SetShouldAntialias(true);
+                    // Set the quality level to use when rescaling.
+                    context.InterpolationQuality = CGInterpolationQuality.High;
+
+                    // Draw the image.
+                    context.DrawImage(new CGRect(0, 0, dstWidth, dstHeight), cgImage);
+
+                    using (var contextImage = context.ToImage())
+                    {
+                        resizedImage = UIImage.FromImage(contextImage, 0, uiImage.Orientation);
+                    }
+                }
+            }
+            else
+            {
+                // Create CGDataProvider which will serve for CGImage creation.
+                using (var dataProvider = new CGDataProvider(imageData, 0, imageData.Length))
+                using (var cgImageSource = CGImageSource.FromDataProvider(dataProvider))
+                {
+                    if (cgImageSource.GetStatus() != CGImageSourceStatus.Complete)
+                    {
+                        throw new Exception();
+                    }
+
+                    var thumbnailOptions = new CGImageThumbnailOptions()
+                    {
+                        CreateThumbnailFromImageAlways = true,
+                        CreateThumbnailWithTransform = false,
+                        ShouldAllowFloat = false,
+                        ShouldCache = false,
+                        MaxPixelSize = Math.Max(dstWidth, dstHeight)
+                    };
+
+                    // Generate the thumbnail.
+                    using (var thumbnail = cgImageSource.CreateThumbnail(0, thumbnailOptions))
+                    {
+                        resizedImage = new UIImage(thumbnail);
+                    }
+                }
+            }
+
+            var result = resizedImage?.ToByteArray(bitmapData.Format) ?? Array.Empty<byte>();
+            resizedImage?.Dispose();
+
+            return result;
+        }
+
+        #endregion
     }
 }

@@ -7,5 +7,8 @@
 
         public static byte[] Expand(byte[] imageData, PILThickness border, PILColor? fill = null) =>
             PlatformExpand(imageData, border, fill);
+
+        public static byte[] Fit(byte[] imageData, int dstWidth, bool shouldAntialias = true) =>
+            PlatformFit(imageData, dstWidth, shouldAntialias);
     }
 }

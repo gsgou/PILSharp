@@ -90,5 +90,23 @@ namespace PILSharp
         }
 
         #endregion
+    
+        #region PlatformFit
+
+        static byte[] PlatformFit(byte[] imageData, int dstWidth, bool shouldAntialias = true)
+        {
+            byte[] result = Array.Empty<byte>();
+
+            using (var originalImage = BitmapFactory.DecodeByteArray(imageData, 0, imageData.Length))
+            using (var resultImage = originalImage.Fit(dstWidth, shouldAntialias))
+            {
+                PILBitmapData bitmapData = GetPILBitmapData(imageData);
+                result = resultImage.ToByteArray(bitmapData.Format);
+            }
+
+            return result;
+        }
+
+        #endregion
     }
 }
