@@ -61,6 +61,8 @@ namespace PILSharp.Sample
             //var fill = new PILSharp.PILColor(0, 0, 0, 255);
             //var result = PILSharp.ImageOps.Expand(imageData, border, fill);
 
+            //var result = PILSharp.ImageOps.Fit(imageData, 100, false);
+
             stopwatch.Stop();
             elapsedTime = stopwatch.ElapsedMilliseconds;
 
