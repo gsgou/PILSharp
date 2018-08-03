@@ -2,6 +2,9 @@
 {
     public static partial class ImageOps
     {
+        public static byte[] Crop(byte[] imageData, PILThickness border) =>
+            PlatformCrop(imageData, border);
+
         public static byte[] Equalize(byte[] imageData) =>
             PlatformEqualize(imageData);
 

@@ -2,6 +2,9 @@
 {
     public static partial class ImageOps
     {
+        static byte[] PlatformCrop(byte[] imageData, PILThickness border) =>
+            throw new NotImplementedInReferenceAssemblyException();
+
         static byte[] PlatformEqualize(byte[] imageData) =>
             throw new NotImplementedInReferenceAssemblyException();
 

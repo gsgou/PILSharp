@@ -40,6 +40,38 @@ namespace PILSharp
             return bitmapData;
         }
 
+        #region PlatformCrop
+
+        static byte[] PlatformCrop(byte[] imageData, PILThickness border)
+        {
+            byte[] result = Array.Empty<byte>();
+
+            PILBitmapData bitmapData = GetPILBitmapData(imageData);
+            int cropWidth = bitmapData.Width - (int)border.HorizontalThickness;
+            int cropHeight = bitmapData.Height - (int)border.VerticalThickness;
+            if (cropWidth < 0 || cropHeight < 0)
+            {
+                throw new ArgumentException("PILThickness is not valid.");
+            }
+
+            using (var originalImage = BitmapFactory.DecodeByteArray(imageData, 0, imageData.Length))
+            using (var resultImage = Bitmap.CreateBitmap(originalImage,
+                                                         (int)border.Left,
+                                                         (int)border.Top,
+                                                         cropWidth,
+                                                         cropHeight))
+            {
+                result = resultImage.ToByteArray(bitmapData.Format);
+
+                originalImage.Recycle();
+                resultImage.Recycle();
+            }
+
+            return result;
+        }
+
+        #endregion
+
         #region PlatformEqualize
 
         static byte[] PlatformEqualize(byte[] imageData)

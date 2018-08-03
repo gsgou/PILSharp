@@ -78,6 +78,36 @@ namespace PILSharp
             return image;
         }
 
+        #region PlatformCrop
+
+        static byte[] PlatformCrop(byte[] imageData, PILThickness border)
+        {
+            byte[] result = Array.Empty<byte>();
+
+            PILBitmapData bitmapData = GetPILBitmapData(imageData);
+            double cropWidth = (double)bitmapData.Width - border.HorizontalThickness;
+            double cropHeight = (double)bitmapData.Height - border.VerticalThickness;
+            if (cropWidth < 0 || cropHeight < 0)
+            {
+                throw new ArgumentException("PILThickness is not valid.");
+            }
+            CGRect cropRect = new CGRect(border.Left,
+                                         border.Top,
+                                         cropWidth,
+                                         cropHeight);
+            
+            using (var cgImage = CGImageFromByteArray(imageData))
+            using (var croppedCGImage = cgImage.WithImageInRect(cropRect))
+            using (var uiImage = new UIImage(croppedCGImage))
+            {
+                result = uiImage.ToByteArray(bitmapData.Format);
+            }
+
+            return result;
+        }
+
+        #endregion
+
         #region PlatformEqualize
 
         const string AccelerateImageLibrary = "/System/Library/Frameworks/Accelerate.framework/Frameworks/vImage.framework/vImage";
