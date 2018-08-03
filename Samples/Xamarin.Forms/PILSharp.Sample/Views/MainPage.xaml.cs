@@ -55,6 +55,9 @@ namespace PILSharp.Sample
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
+            //var border = new PILSharp.PILThickness(20d, 10d, 20d, 10d);
+            //var result = PILSharp.ImageOps.Crop(imageData, border);
+
             var result = PILSharp.ImageOps.Equalize(imageData);
 
             //var border = new PILSharp.PILThickness(20d, 10d, 40d, 20d);
