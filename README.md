@@ -1,6 +1,6 @@
 # PILSharp
 
-PILSharp gives developers image processing cross-platform APIs for their mobile applications. 
+PILSharp gives Xamarin developers high-performance image processing cross-platform APIs for their mobile applications.
 
 ## Installation
 * NuGet Official Releases: [![NuGet](https://img.shields.io/nuget/v/PILSharp.svg?label=NuGet)](https://www.nuget.org/packages/PILSharp)
@@ -12,6 +12,7 @@ PILSharp is focused on the following platforms:
 
 ## Current APIs:
 The following cross-platform APIs are available in PILSharp:
+- [x] Crop (Remove border from image.)
 - [x] Equalize (Equalize the image histogram.)
 - [x] Expand (Add border to the image.)
 - [x] Fit (Returns a sized version of the image.)
