@@ -11,6 +11,7 @@
                 <Setter Property="HorizontalTextAlignment" Value="Center"/>
                 <Setter Property="FontSize" Value="Micro"/>
             </Style>
+            <local:IntEnumConverter x:Key="IntEnum"/>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -18,21 +19,35 @@
               RowSpacing="0"
               ColumnSpacing="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="2.3*"/>
+                <RowDefinition Height="0.6*"/>
                 <RowDefinition Height="0.2*"/>
-                <RowDefinition Height="2.3*"/>
+                <RowDefinition Height="2.1*"/>
                 <RowDefinition Height="0.2*"/>
-                <RowDefinition Height="2.3*"/>
+                <RowDefinition Height="2.1*"/>
                 <RowDefinition Height="0.2*"/>
-                <RowDefinition Height="2.3*"/>
+                <RowDefinition Height="2.1*"/>
+                <RowDefinition Height="0.2*"/>
+                <RowDefinition Height="2.1*"/>
                 <RowDefinition Height="0.2*"/>
            </Grid.RowDefinitions>
            <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5*"/>
                 <ColumnDefinition Width="5*"/>
            </Grid.ColumnDefinitions>
+           <Picker x:Name="Picker"
+                   Grid.Row="0"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   FontSize="Medium"
+                   Title="ImageOps"
+                   ItemsSource="{Binding ImageOpsNames}"
+                   SelectedIndex="{Binding SelectedImageOp, Converter={StaticResource IntEnum}}">
+               <Picker.Effects>
+                   <local:PickerHorizontalCenterEffect/>
+               </Picker.Effects>
+           </Picker>
            <Image x:Name="Source1"
-                  Grid.Row="0"
+                  Grid.Row="2"
                   Grid.Column="0"
                   Grid.ColumnSpan="1"
                   Source="{local:ImageResource PILSharp.Sample.TestImages.vgl_5674_0098.bmp}"
@@ -42,13 +57,13 @@
                                           NumberOfTapsRequired="1"/>
                </Image.GestureRecognizers>
            </Image>
-           <Label Grid.Row="1"
+           <Label Grid.Row="3"
                   Grid.Column="0"
                   Grid.ColumnSpan="1"
                   Text="vgl_5674_0098.bmp"
                   Style="{StaticResource LabelStyle}"/>
            <Image x:Name="Source2"
-                  Grid.Row="2"
+                  Grid.Row="4"
                   Grid.Column="0"
                   Grid.ColumnSpan="1"
                   Source="{local:ImageResource PILSharp.Sample.TestImages.vgl_6434_0018a.bmp}"
@@ -58,13 +73,13 @@
                                           NumberOfTapsRequired="1"/>
                </Image.GestureRecognizers>
            </Image>
-           <Label Grid.Row="3"
+           <Label Grid.Row="5"
                   Grid.Column="0"
                   Grid.ColumnSpan="1"
                   Text="vgl_6434_0018a.bmp"
                   Style="{StaticResource LabelStyle}"/>
            <Image x:Name="Source3"
-                  Grid.Row="4"
+                  Grid.Row="6"
                   Grid.Column="0"
                   Grid.ColumnSpan="1"
                   Source="{local:ImageResource PILSharp.Sample.TestImages.vgl_6548_0026a.bmp}"
@@ -74,13 +89,13 @@
                                           NumberOfTapsRequired="1"/>
                </Image.GestureRecognizers>
            </Image>
-           <Label Grid.Row="5"
+           <Label Grid.Row="7"
                   Grid.Column="0"
                   Grid.ColumnSpan="1"
                   Text="vgl_6548_0026a.bmp"
                   Style="{StaticResource LabelStyle}"/>
            <Image x:Name="Source4"
-                  Grid.Row="6"
+                  Grid.Row="8"
                   Grid.Column="0"
                   Grid.ColumnSpan="1"
                   Source="{local:ImageResource PILSharp.Sample.TestImages.nightshot_iso_100.bmp}"
@@ -90,49 +105,49 @@
                                           NumberOfTapsRequired="1"/>
                </Image.GestureRecognizers>
            </Image>
-           <Label Grid.Row="7"
+           <Label Grid.Row="9"
                   Grid.Column="0"
                   Grid.ColumnSpan="1"
                   Text="nightshot_iso_100.bmp"
                   Style="{StaticResource LabelStyle}"/>
             
            <Image x:Name="Target1"
-                  Grid.Row="0"
-                  Grid.Column="1"
-                  Grid.ColumnSpan="1"
-                  Aspect="AspectFit"/>
-           <Label x:Name="Target1Label"
-                  Grid.Row="1"
-                  Grid.Column="1"
-                  Grid.ColumnSpan="1"
-                  Style="{StaticResource LabelStyle}"/>
-            <Image x:Name="Target2"
                   Grid.Row="2"
                   Grid.Column="1"
                   Grid.ColumnSpan="1"
                   Aspect="AspectFit"/>
-           <Label x:Name="Target2Label"
+           <Label x:Name="Target1Label"
                   Grid.Row="3"
                   Grid.Column="1"
                   Grid.ColumnSpan="1"
                   Style="{StaticResource LabelStyle}"/>
-            <Image x:Name="Target3"
+            <Image x:Name="Target2"
                   Grid.Row="4"
                   Grid.Column="1"
                   Grid.ColumnSpan="1"
                   Aspect="AspectFit"/>
-           <Label x:Name="Target3Label"
+           <Label x:Name="Target2Label"
                   Grid.Row="5"
                   Grid.Column="1"
                   Grid.ColumnSpan="1"
                   Style="{StaticResource LabelStyle}"/>
-            <Image x:Name="Target4"
+            <Image x:Name="Target3"
                   Grid.Row="6"
                   Grid.Column="1"
                   Grid.ColumnSpan="1"
                   Aspect="AspectFit"/>
-           <Label x:Name="Target4Label"
+           <Label x:Name="Target3Label"
                   Grid.Row="7"
+                  Grid.Column="1"
+                  Grid.ColumnSpan="1"
+                  Style="{StaticResource LabelStyle}"/>
+            <Image x:Name="Target4"
+                  Grid.Row="8"
+                  Grid.Column="1"
+                  Grid.ColumnSpan="1"
+                  Aspect="AspectFit"/>
+           <Label x:Name="Target4Label"
+                  Grid.Row="9"
                   Grid.Column="1"
                   Grid.ColumnSpan="1"
                   Style="{StaticResource LabelStyle}"/>
