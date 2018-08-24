@@ -2,7 +2,7 @@
   <PropertyGroup>
     <!--Work around so the conditions work below-->
     <TargetFrameworks></TargetFrameworks>
-    <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">netstandard1.0;netstandard2.0;Xamarin.iOS10;MonoAndroid81;</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">netstandard1.0;netstandard2.0;Xamarin.iOS10;MonoAndroid71;MonoAndroid80;MonoAndroid81;</TargetFrameworks>
     <AssemblyName>PILSharp</AssemblyName>
     <RootNamespace>PILSharp</RootNamespace>
     <PackageId>PILSharp</PackageId>
@@ -43,11 +43,19 @@
     <Compile Include="**\*.netstandard.cs" />
     <Compile Include="**\*.netstandard.*.cs" />
   </ItemGroup>
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
-    <PackageReference Include="Xamarin.Android.Support.V8.Renderscript" Version="27.0.2.1" />    
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">   
     <Compile Include="**\*.android.cs" />
     <Compile Include="**\*.android.*.cs" />
   </ItemGroup>
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid81')) ">
+    <PackageReference Include="Xamarin.Android.Support.V8.Renderscript" Version="27.0.2.1" />
+  </ItemGroup>
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid80')) ">
+    <PackageReference Include="Xamarin.Android.Support.V8.Renderscript" Version="26.1.0.1" />
+  </ItemGroup>
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid71')) ">
+    <PackageReference Include="Xamarin.Android.Support.V8.Renderscript" Version="25.4.0.2" />
+  </ItemGroup>  
   <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
     <Compile Include="**\*.ios.cs" />
     <Compile Include="**\*.ios.*.cs" />
