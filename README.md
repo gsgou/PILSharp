@@ -27,13 +27,17 @@ If building on Visual Studio 2017 you will need the following SDKs and workloads
 - .NET Core
 
 ### You will need the following SDKs
-- Android 8.1 SDK Installed
+- Android 7.1, 8.0, 8.1 SDK Installed
 
 If using Visual Studio for Mac the project can be built at the command line with MSBuild. To build through the command line, navigate to where PILSharp.csproj exists then run:
 
-```csharp
+```shell-script
 dotnet restore
-msbuild PILSharp.csproj
+msbuild /p:Configuration=Debug PILSharp.csproj
+```
+```shell-script
+dotnet restore
+msbuild /t:Pack /p:PackageVersion=major.minor.build /p:PackageOutputPath="$HOME/Projects/packages" /p:Configuration=Release PILSharp.csproj
 ```
 ## License
 Distributed with the MIT license.
