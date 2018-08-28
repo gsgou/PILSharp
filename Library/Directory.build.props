@@ -1,0 +1,10 @@
+<Project>
+ <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+   <!-- <TargetsToBuild>All</TargetsToBuild>  -->
+   <!-- <TargetsToBuild>Android</TargetsToBuild> --> 
+   <TargetsToBuild>iOS</TargetsToBuild>
+ </PropertyGroup>
+ <PropertyGroup Condition=" '$(Configuration)' != 'Debug' ">
+   <TargetsToBuild>All</TargetsToBuild>
+ </PropertyGroup>
+</Project>
