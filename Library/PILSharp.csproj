@@ -23,13 +23,15 @@
     <Authors>Giorgos Sgouridis</Authors>
     <Owners>Giorgos Sgouridis</Owners>
     <NeutralLanguage>en</NeutralLanguage>
-    <RepositoryUrl>https://github.com/gsgou/PILSharp</RepositoryUrl>
+    <RepositoryUrl>https://github.com/gsgou/PILSharp.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageProjectUrl>https://github.com/gsgou/PILSharp</PackageProjectUrl>
     <PackageReleaseNotes>See: https://github.com/gsgou/PILSharp</PackageReleaseNotes>
     <LangVersion>7.2</LangVersion>
     <DefineConstants>$(DefineConstants);</DefineConstants>
     <UseFullSemVerForNuGet>false</UseFullSemVerForNuGet>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <PackageProjectUrl>https://github.com/gsgou/PILSharp</PackageProjectUrl>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
     <DebugType>full</DebugType>
