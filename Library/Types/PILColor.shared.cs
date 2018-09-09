@@ -6,32 +6,16 @@
         // https://github.com/xamarin/Xamarin.Forms/blob/master/Xamarin.Forms.Core/Color.cs
 
         readonly float _a;
-
-        public double A
-        {
-            get { return _a; }
-        }
+        public double A => _a;
 
         readonly float _r;
-
-        public double R
-        {
-            get { return _r; }
-        }
+        public double R => _r;
 
         readonly float _g;
-
-        public double G
-        {
-            get { return _g; }
-        }
+        public double G => _g;
 
         readonly float _b;
-
-        public double B
-        {
-            get { return _b; }
-        }
+        public double B => _b;
 
         public PILColor(double r, double g, double b, double a)
         {

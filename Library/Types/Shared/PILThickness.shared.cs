@@ -1,6 +1,8 @@
-﻿namespace PILSharp
+﻿using System;
+
+namespace PILSharp
 {
-    public struct PILThickness
+    public struct PILThickness : IEquatable<PILThickness>
     {
         // Try to match Xamarin.Forms:
         // https://github.com/xamarin/Xamarin.Forms/blob/master/Xamarin.Forms.Core/Thickness.cs
@@ -13,20 +15,15 @@
 
         public double Bottom { get; set; }
 
-        public double HorizontalThickness
-        {
-            get { return Left + Right; }
-        }
+        public double HorizontalThickness =>
+            Left + Right;
 
-        public double VerticalThickness
-        {
-            get { return Top + Bottom; }
-        }
+        public double VerticalThickness =>
+            Top + Bottom;
 
-        internal bool IsDefault
-        {
-            get { return Left == 0 && Top == 0 && Right == 0 && Bottom == 0; }
-        }
+        internal bool IsDefault =>
+            // With C# 7.3, Visual Studio for Mac 7.8 Preview
+            (Left, Top, Right, Bottom) == (0, 0, 0, 0);
 
         public PILThickness(double uniformSize) : this(uniformSize, uniformSize, uniformSize, uniformSize)
         {
@@ -44,44 +41,24 @@
             Bottom = bottom;
         }
 
-        public static implicit operator PILThickness(double uniformSize)
-        {
-            return new PILThickness(uniformSize);
-        }
+        public static implicit operator PILThickness(double uniformSize) =>
+            new PILThickness(uniformSize);
 
-        bool Equals(PILThickness other)
-        {
-            return Left.Equals(other.Left) && Top.Equals(other.Top) && Right.Equals(other.Right) && Bottom.Equals(other.Bottom);
-        }
+        public bool Equals(PILThickness other) =>
+            // With C# 7.3, Visual Studio for Mac 7.8 Preview
+            (Left, Top, Right, Bottom) == (other.Left, other.Top, other.Right, other.Bottom);
 
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj))
-                return false;
-            return obj is PILThickness && Equals((PILThickness)obj);
-        }
+        public override bool Equals(object obj) =>
+            (obj is PILThickness thickness) && Equals(thickness);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hashCode = Left.GetHashCode();
-                hashCode = (hashCode * 397) ^ Top.GetHashCode();
-                hashCode = (hashCode * 397) ^ Right.GetHashCode();
-                hashCode = (hashCode * 397) ^ Bottom.GetHashCode();
-                return hashCode;
-            }
-        }
+        public override int GetHashCode() =>
+            (Left, Top, Right, Bottom).GetHashCode();
 
-        public static bool operator == (PILThickness left, PILThickness right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(PILThickness left, PILThickness right) =>
+            Equals(left, right);
 
-        public static bool operator != (PILThickness left, PILThickness right)
-        {
-            return !left.Equals(right);
-        }
+        public static bool operator !=(PILThickness left, PILThickness right) =>
+            !Equals(left, right);
 
         public void Deconstruct(out double left, out double top, out double right, out double bottom)
         {
